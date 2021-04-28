@@ -2,6 +2,6 @@
 <p class="jumbotron">
   Muchas gracias por su compra!<br />
   Su pago ID <?=$_REQUEST['payment_id']?$_REQUEST['payment_id']:$_REQUEST['collection_id)']?> ha sido aprobado.<br />
-  Método de pago: <?=$_REQUEST['payment_method_id']?>.<br />
+  Método de pago: <?=$_REQUEST['payment_type']?>.<br />
   Referencia Externa: <?=$_REQUEST['external_reference']?>.<br />
 </p>
