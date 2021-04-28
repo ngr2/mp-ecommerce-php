@@ -1,3 +1,62 @@
+<?php
+  require_once 'vendor/autoload.php';
+  MercadoPago\SDK::setAccessToken("APP_USR-6317427424180639-042414-47e969706991d3a442922b0702a0da44-469485398");
+  MercadoPago\SDK::setIntegratorId("dev_24c65fb163bf11ea96500242ac130004");
+
+  $baseURL = 'https://ngrunfeld-mp-commerce-php.herokuapp.com/';
+
+  //payer information
+  $payer = new MercadoPago\Payer();
+  $payer->name = "Lalo";
+  $payer->surname = "Landa";
+  $payer->email = "test_user_63274575@testuser.com";
+  $payer->phone = array(
+    "area_code" => "11",
+    "number" => "22223333"
+  );
+  $payer->address = array(
+    "street_name" => "False",
+    "street_number" => 123,
+    "zip_code" => "1111"
+  );
+
+  //item
+  $item = new MercadoPago\Item();
+  $item->id = "1234";
+  $item->title = $_POST['title'];
+  $item->description = "Dispositivo móvil de Tienda e-commerce";
+  $item->picture_url = $baseURL.$_POST['img'];
+  $item->quantity = 1;
+  //$item->category_id = "home";
+  $item->currency_id = "ARS";
+  $item->unit_price = $_POST['price'];
+
+  //preference setup
+  $preference = new MercadoPago\Preference();
+  $preference->payer = $payer;
+  $preference->items = [$item];
+  $preference->payment_methods = array(
+    "excluded_payment_methods" => array(
+      array("id" => "amex")
+    ),
+    "excluded_payment_types" => array(
+      array("id" => "atm")
+    ),
+    "installments" => 6
+  );
+
+  $preference->external_reference = 'ndgrunfeld@gmail.com';
+  $preference->notification_url = $baseURL.'ipn.php';
+  $preference->back_urls = array(
+      "success" => $baseURL.'success.php',
+      "failure" => $baseURL.'failure.php',
+      "pending" => $baseURL.'pending.php'
+  );
+  $preference->auto_return = "approved";
+  $preference->save();
+?>
+<?php $mplink = $preference->init_point; ?>
+
 <!DOCTYPE html>
 <html class="supports-animation supports-columns svg no-touch no-ie no-oldie no-ios supports-backdrop-filter as-mouseuser" lang="en-US"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
@@ -130,7 +189,9 @@
                                             <?php echo "$" . $_POST['unit'] ?>
                                         </h3>
                                     </div>
-                                    <button type="submit" class="mercadopago-button" formmethod="post">Pagar</button>
+                                    <form action="<?=$preference->init_point?>">
+                                      <button type="submit" class="mercadopago-button" formmethod="post">Pagar la compra</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
