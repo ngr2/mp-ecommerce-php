@@ -12,8 +12,6 @@
     	$statusCode = 201;
   	}
 	}
-  $data = json_decode($_GET);
-  file_put_contents('result.json', $data);
   file_put_contents('result.json', file_get_contents('php://input'));
   http_response_code($statusCode);
 ?>
